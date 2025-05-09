@@ -34,7 +34,6 @@ export const generateChatResponse = async (req, res) => {
       });
     }
 
-    // Llamada a la API de OpenAI con modelo gpt-4o para respuestas más avanzadas
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
@@ -44,13 +43,12 @@ export const generateChatResponse = async (req, res) => {
         },
         { role: "user", content: prompt }
       ],
-      max_tokens: 300, // Limitar tokens para respuestas más cortas
-      temperature: 0.7, // Mantener algo de creatividad
+      max_tokens: 300,
+      temperature: 0.7,
     });
 
     const response = completion.choices[0].message.content;
 
-    // Guardar la conversación en la base de datos
     const conversation = new Conversation({
       prompt,
       response,

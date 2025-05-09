@@ -22,7 +22,6 @@ if (!process.env.OPENAI_API_KEY) {
   console.log('2. Añade la línea: OPENAI_API_KEY=tu-api-key-de-openai');
   console.log('3. Reinicia el servidor\n');
   
-  // Verificar si existe el archivo .env
   const envPath = path.join(__dirname, '.env');
   if (!fs.existsSync(envPath)) {
     console.log('\x1b[31m%s\x1b[0m', 'No se encontró el archivo .env');
@@ -37,14 +36,14 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/chat-gpt-app';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://jorgeborrero01:7gIFtcjdX3QGtuWP@cluster0.zjo0v.mongodb.net/chat?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('✅ MongoDB conectado'))
   .catch(err => console.error('❌ Error de conexión a MongoDB:', err));
 
-// Rutas
-app.use('/api/chat', chatRoutes);
+// Rutas (aquí quitamos /api/chat y dejamos solo '/')
+app.use('/', chatRoutes);
 
 // Ruta para probar el servidor
 app.get('/', (req, res) => {
