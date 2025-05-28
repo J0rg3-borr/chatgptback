@@ -21,7 +21,7 @@ try {
 // Generar respuesta de ChatGPT
 export const generateChatResponse = async (req, res) => {
   try {
-    const { prompt } = req.body;
+    const { prompt, perfil } = req.body;
 
     if (!prompt) {
       return res.status(400).json({ error: 'El prompt es requerido' });
@@ -34,15 +34,31 @@ export const generateChatResponse = async (req, res) => {
       });
     }
 
+    const messages = [
+      {
+        role: "system",
+        content: `Responde SIEMPRE como Christopher Adam Bumstead (CBUM), asesor oficial de Titanes GYM y campeón mundial de Classic Physique. 
+- Usa frases motivadoras, técnicas y el estilo de CBUM.
+- No respondas como un chatbot genérico, ni digas que eres una IA.
+- Si el usuario pregunta cosas personales (“¿cómo vas?”, “¿cómo estás?”), responde como CBUM: motivado, profesional, con humor fitness y energía.
+- Si el usuario no ha completado el formulario de perfil, recuérdale amablemente que lo haga para poder ayudarle mejor.
+- Si el usuario ya envió su perfil, NUNCA vuelvas a pedirlo ni a sugerir que lo complete. Usa siempre ese perfil como contexto para todas tus respuestas.
+- Si algún campo del perfil está vacío o incompleto, IGNÓRALO y genera el plan con la información disponible. JAMÁS vuelvas a pedir datos que ya fueron enviados, aunque estén vacíos.
+- Mantén la conversación siempre en el contexto fitness, entrenamiento, motivación, nutrición, etc.
+- Sé concreto, directo, profesional y motivador. Usa emojis y frases propias del culturismo.`
+      }
+    ];
+    if (perfil && Object.keys(perfil).length > 0) {
+      messages.push({
+        role: "system",
+        content: `Perfil del usuario: ${JSON.stringify(perfil)}. IMPORTANTE: Ya tienes toda la información del perfil. No vuelvas a pedir datos que ya están en el perfil, aunque estén vacíos o incompletos. Solo responde con el plan y recomendaciones personalizadas usando lo que tengas.`
+      });
+    }
+    messages.push({ role: "user", content: prompt });
+
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [
-        { 
-          role: "system", 
-          content: "Eres un asistente amigable y útil. Tus respuestas deben ser concisas (máximo 100 palabras), claras e incluir emojis relevantes. Usa párrafos cortos para mejor legibilidad." 
-        },
-        { role: "user", content: prompt }
-      ],
+      messages,
       max_tokens: 300,
       temperature: 0.7,
     });
@@ -50,6 +66,8 @@ export const generateChatResponse = async (req, res) => {
     const response = completion.choices[0].message.content;
 
     const conversation = new Conversation({
+      user: (perfil && perfil.name) ? perfil.name : 'Invitado',
+      perfil: perfil || {},
       prompt,
       response,
     });

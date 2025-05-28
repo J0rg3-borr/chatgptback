@@ -38,6 +38,7 @@ app.use(express.json());
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://jorgeborrero01:7gIFtcjdX3QGtuWP@cluster0.zjo0v.mongodb.net/chat?retryWrites=true&w=majority&appName=Cluster0';
 
+
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('✅ MongoDB conectado'))
   .catch(err => console.error('❌ Error de conexión a MongoDB:', err));
