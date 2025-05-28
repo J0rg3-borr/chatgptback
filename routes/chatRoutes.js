@@ -4,8 +4,8 @@ import { generateChatResponse, getConversationHistory } from '../controllers/cha
 const router = express.Router();
 
 // Ruta para generar respuestas de ChatGPT
-router.post('/', generateChatResponse);
+router.post('/chat', generateChatResponse);
 // Ruta para obtener el historial de conversaciones
-router.get('/history', getConversationHistory);
+router.get('/chat/history', getConversationHistory);
 
 export { router };
