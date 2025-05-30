@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import Conversation from '../models/Conversation.js';
+import User from '../models/User.js'; // Asegúrate de tener un modelo User definido
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -65,6 +66,7 @@ export const generateChatResponse = async (req, res) => {
 
     const response = completion.choices[0].message.content;
 
+    // Guardar la conversación en la base de datos
     const conversation = new Conversation({
       user: (perfil && perfil.name) ? perfil.name : 'Invitado',
       perfil: perfil || {},
@@ -92,5 +94,24 @@ export const getConversationHistory = async (req, res) => {
   } catch (error) {
     console.error('Error al obtener el historial:', error);
     res.status(500).json({ error: 'Error al obtener el historial de conversaciones' });
+  }
+};
+
+// Guardar usuario y plan de entrenamiento
+export const saveUserAndPlan = async (req, res) => {
+  try {
+    const { name, perfil, plan } = req.body;
+
+    // Guarda el usuario y su plan en la base de datos
+    const user = await User.create({
+      name,
+      perfil,
+      plan,
+    });
+
+    res.status(201).json({ message: 'Usuario y plan guardados exitosamente', user });
+  } catch (error) {
+    console.error('Error al guardar usuario y plan:', error);
+    res.status(500).json({ message: 'Error al guardar usuario y plan' });
   }
 };

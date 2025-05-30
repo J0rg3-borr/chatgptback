@@ -36,7 +36,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://jorgeborrero01:7gIFtcjdX3QGtuWP@cluster0.zjo0v.mongodb.net/chat?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://jorgeborrero01:7gIFtcjdX3QGtuWP@cluster0.zjo0v.mongodb.net/CBUM?retryWrites=true&w=majority&appName=Cluster0';
 
 
 mongoose.connect(MONGODB_URI)
